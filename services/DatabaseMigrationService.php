@@ -6,7 +6,7 @@ class DatabaseMigrationService extends BaseService
 {
 	public function MigrateDatabase()
 	{
-		$this->DatabaseService->ExecuteDbStatement("CREATE TABLE IF NOT EXISTS migrations (migration INTEGER NOT NULL PRIMARY KEY UNIQUE, execution_time_timestamp DATETIME DEFAULT (datetime('now', 'localtime')))");
+		$this->DatabaseService->ExecuteDbStatement("CREATE TABLE IF NOT EXISTS migrations (migration INTEGER NOT NULL PRIMARY KEY UNIQUE, execution_time_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
 
 		$sqlMigrationFiles = array();
 		foreach (new \FilesystemIterator(__DIR__ . '/../migrations') as $file)
@@ -17,11 +17,11 @@ class DatabaseMigrationService extends BaseService
 			}
 		}
 		ksort($sqlMigrationFiles);
-		foreach($sqlMigrationFiles as $migrationNumber => $migrationFile)
-		{
-			$migrationNumber = ltrim($migrationNumber, '0');
-			$this->ExecuteSqlMigrationWhenNeeded($migrationNumber, file_get_contents($migrationFile));
-		}
+		// foreach($sqlMigrationFiles as $migrationNumber => $migrationFile)
+		// {
+		// 	$migrationNumber = ltrim($migrationNumber, '0');
+		// 	$this->ExecuteSqlMigrationWhenNeeded($migrationNumber, file_get_contents($migrationFile));
+		// }
 
 		$phpMigrationFiles = array();
 		foreach (new \FilesystemIterator(__DIR__ . '/../migrations') as $file)
@@ -51,7 +51,7 @@ class DatabaseMigrationService extends BaseService
 
 	private function ExecutePhpMigrationWhenNeeded(int $migrationId, string $phpFile)
 	{
-		$rowCount = $this->DatabaseService->ExecuteDbQuery('SELECT COUNT(*) FROM migrations WHERE migration = ' . $migrationId)->fetchColumn();
+		// $rowCount = $this->DatabaseService->ExecuteDbQuery('SELECT COUNT(*) FROM migrations WHERE migration = ' . $migrationId)->fetchColumn();
 		if (intval($rowCount) === 0)
 		{
 			include $phpFile;
