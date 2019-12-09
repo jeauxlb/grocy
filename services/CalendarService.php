@@ -96,7 +96,7 @@ class CalendarService extends BaseService
 		$mealPlanRecipeEvents = array();
 		foreach($mealPlanDayRecipes as $mealPlanDayRecipe)
 		{
-			$recipesOfCurrentDay = $this->Database->recipes_nestings_resolved()->where('recipe_id = :1 AND includes_recipe_id != :1', $mealPlanDayRecipe->id);
+			$recipesOfCurrentDay = $this->Database->recipes_nestings_resolved()->where('recipe_id = ? AND includes_recipe_id != ?', $mealPlanDayRecipe->id);
 			foreach ($recipesOfCurrentDay as $recipeOfCurrentDay)
 			{
 				$mealPlanRecipeEvents[] = array(

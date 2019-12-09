@@ -46,8 +46,8 @@ class RecipesController extends BaseController
 			}
 		}
 
-		$selectedRecipeSubRecipes = $this->Database->recipes()->where('id IN (SELECT includes_recipe_id FROM recipes_nestings_resolved WHERE recipe_id = :1 AND includes_recipe_id != :1)', $selectedRecipe->id)->orderBy('name')->fetchAll();
-		$selectedRecipeSubRecipesPositions = $this->Database->recipes_pos_resolved()->where('recipe_id = :1', $selectedRecipe->id)->orderBy('ingredient_group')->fetchAll();
+		$selectedRecipeSubRecipes = $this->Database->recipes()->where('id IN (SELECT includes_recipe_id FROM recipes_nestings_resolved WHERE recipe_id = ? AND includes_recipe_id != ?)', $selectedRecipe->id)->orderBy('name')->fetchAll();
+		$selectedRecipeSubRecipesPositions = $this->Database->recipes_pos_resolved()->where('recipe_id = ?', $selectedRecipe->id)->orderBy('ingredient_group')->fetchAll();
 
 		$includedRecipeIdsAbsolute = array();
 		$includedRecipeIdsAbsolute[] = $selectedRecipe->id;

@@ -50,7 +50,7 @@ class UserfieldsService extends BaseService
 			throw new \Exception('Entity does not exist or is not exposed');
 		}
 
-		$userfields = $this->Database->userfield_values_resolved()->where('entity = :1 AND object_id = :2', $entity, $objectId)->orderBy('name')->fetchAll();
+		$userfields = $this->Database->userfield_values_resolved()->where('entity = ? AND object_id = ?', $entity, $objectId)->orderBy('name')->fetchAll();
 		$userfieldKeyValuePairs = array();
 		foreach ($userfields as $userfield)
 		{
@@ -79,7 +79,7 @@ class UserfieldsService extends BaseService
 
 		foreach ($userfields as $key => $value)
 		{
-			$fieldRow = $this->Database->userfields()->where('entity = :1 AND name = :2', $entity, $key)->fetch();
+			$fieldRow = $this->Database->userfields()->where('entity = ? AND name = ?', $entity, $key)->fetch();
 
 			if ($fieldRow === null)
 			{
@@ -88,7 +88,7 @@ class UserfieldsService extends BaseService
 
 			$fieldId = $fieldRow->id;
 
-			$alreadyExistingEntry = $this->Database->userfield_values()->where('field_id = :1 AND object_id = :2', $fieldId, $objectId)->fetch();
+			$alreadyExistingEntry = $this->Database->userfield_values()->where('field_id = ? AND object_id = ?', $fieldId, $objectId)->fetch();
 			if ($alreadyExistingEntry) // Update
 			{
 				$alreadyExistingEntry->update(array(

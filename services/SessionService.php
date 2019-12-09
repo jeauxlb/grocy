@@ -15,7 +15,7 @@ class SessionService extends BaseService
 		}
 		else
 		{
-			$sessionRow = $this->Database->sessions()->where('session_key = :1 AND expires > :2', $sessionKey, date('Y-m-d H:i:s', time()))->fetch();
+			$sessionRow = $this->Database->sessions()->where('session_key = ? AND expires > ?', $sessionKey, date('Y-m-d H:i:s', time()))->fetchAll()[0];
 			if ($sessionRow !== null)
 			{
 				// This should not change the database file modification time as this is used

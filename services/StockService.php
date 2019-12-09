@@ -57,7 +57,7 @@ class StockService extends BaseService
 
 	public function GetProductIdFromBarcode(string $barcode)
 	{
-		$potentialProduct = $this->Database->products()->where("','  || barcode || ',' LIKE '%,' || :1 || ',%' AND IFNULL(barcode, '') != ''", $barcode)->limit(1)->fetch();
+		$potentialProduct = $this->Database->products()->where("','  || barcode || ',' LIKE '%,' || ? || ',%' AND IFNULL(barcode, '') != ''", $barcode)->limit(1)->fetch();
 
 		if ($potentialProduct === null)
 		{
@@ -70,11 +70,11 @@ class StockService extends BaseService
 	public function GetExpiringProducts(int $days = 5, bool $excludeExpired = false)
 	{
 		$currentStock = $this->GetCurrentStock(false);
-		$currentStock = FindAllObjectsInArrayByPropertyValue($currentStock, 'best_before_date', date('Y-m-d 23:59:59', strtotime("+$days days")), '<');
+		$currentStock = FindAllObjectsInArrayByPropertyValue($currentStock, 'best_before_date', date('Y-m-d 23??', strtotime("+$days days")), '<');
 
 		if ($excludeExpired)
 		{
-			$currentStock = FindAllObjectsInArrayByPropertyValue($currentStock, 'best_before_date', date('Y-m-d 23:59:59', strtotime('now')), '>');
+			$currentStock = FindAllObjectsInArrayByPropertyValue($currentStock, 'best_before_date', date('Y-m-d 23??', strtotime('now')), '>');
 		}
 
 		return $currentStock;
@@ -109,7 +109,7 @@ class StockService extends BaseService
 		$averageShelfLifeDays = intval($this->Database->stock_average_product_shelf_life()->where('id', $productId)->fetch()->average_shelf_life_days);
 		
 		$lastPrice = null;
-		$lastLogRow = $this->Database->stock_log()->where('product_id = :1 AND transaction_type IN (:2, :3) AND undone = 0', $productId, self::TRANSACTION_TYPE_PURCHASE, self::TRANSACTION_TYPE_INVENTORY_CORRECTION)->orderBy('row_created_timestamp', 'DESC')->limit(1)->fetch();
+		$lastLogRow = $this->Database->stock_log()->where('product_id = ? AND transaction_type IN (?, ?) AND undone = 0', $productId, self::TRANSACTION_TYPE_PURCHASE, self::TRANSACTION_TYPE_INVENTORY_CORRECTION)->orderBy('row_created_timestamp', 'DESC')->limit(1)->fetch();
 		if ($lastLogRow !== null && !empty($lastLogRow))
 		{
 			$lastPrice = $lastLogRow->price;
@@ -150,7 +150,7 @@ class StockService extends BaseService
 		}
 
 		$returnData = array();
-		$rows = $this->Database->stock_log()->where('product_id = :1 AND transaction_type IN (:2, :3) AND undone = 0', $productId, self::TRANSACTION_TYPE_PURCHASE, self::TRANSACTION_TYPE_INVENTORY_CORRECTION)->whereNOT('price', null)->orderBy('purchased_date', 'DESC');
+		$rows = $this->Database->stock_log()->where('product_id = ? AND transaction_type IN (?, ?) AND undone = 0', $productId, self::TRANSACTION_TYPE_PURCHASE, self::TRANSACTION_TYPE_INVENTORY_CORRECTION)->whereNOT('price', null)->orderBy('purchased_date', 'DESC');
 		foreach ($rows as $row)
 		{
 			$returnData[] = array(
@@ -168,7 +168,7 @@ class StockService extends BaseService
 
 		if ($excludeOpened)
 		{
-			return $this->Database->stock()->where('product_id = :1 AND open = 0', $productId)->orderBy('best_before_date', 'ASC')->orderBy('purchased_date', 'ASC')->fetchAll();
+			return $this->Database->stock()->where('product_id = ? AND open = 0', $productId)->orderBy('best_before_date', 'ASC')->orderBy('purchased_date', 'ASC')->fetchAll();
 		}
 		else
 		{
@@ -408,7 +408,7 @@ class StockService extends BaseService
 			throw new \Exception('Product does not exist');
 		}
 
-		$productStockAmountUnopened = $this->Database->stock()->where('product_id = :1 AND open = 0', $productId)->sum('amount');
+		$productStockAmountUnopened = $this->Database->stock()->where('product_id = ? AND open = 0', $productId)->sum('amount');
 		$potentialStockEntries = $this->GetProductStockEntries($productId, true);
 		$product = $this->Database->products($productId);
 
@@ -540,7 +540,7 @@ class StockService extends BaseService
 			throw new \Exception('Shopping list does not exist');
 		}
 
-		$this->Database->shopping_list()->where('shopping_list_id = :1', $listId)->delete();
+		$this->Database->shopping_list()->where('shopping_list_id = ?', $listId)->delete();
 	}
 
 
@@ -551,7 +551,7 @@ class StockService extends BaseService
 			throw new \Exception('Shopping list does not exist');
 		}
 
-		$productRow = $this->Database->shopping_list()->where('product_id = :1', $productId)->fetch();
+		$productRow = $this->Database->shopping_list()->where('product_id = ?', $productId)->fetch();
 
 		//If no entry was found with for this product, we return gracefully
 		if ($productRow != null && !empty($productRow))
@@ -581,7 +581,7 @@ class StockService extends BaseService
 			throw new \Exception('Product does not exist');
 		}
 
-		$alreadyExistingEntry = $this->Database->shopping_list()->where('product_id = :1 AND shopping_list_id = :2', $productId, $listId)->fetch();
+		$alreadyExistingEntry = $this->Database->shopping_list()->where('product_id = ? AND shopping_list_id = ?', $productId, $listId)->fetch();
 		if ($alreadyExistingEntry) // Update
 		{
 			$alreadyExistingEntry->update(array(
@@ -604,13 +604,13 @@ class StockService extends BaseService
 
 	private function ProductExists($productId)
 	{
-		$productRow = $this->Database->products()->where('id = :1', $productId)->fetch();
+		$productRow = $this->Database->products()->where('id = ?', $productId)->fetch();
 		return $productRow !== null;
 	}
 
 	private function ShoppingListExists($listId)
 	{
-		$shoppingListRow = $this->Database->shopping_lists()->where('id = :1', $listId)->fetch();
+		$shoppingListRow = $this->Database->shopping_lists()->where('id = ?', $listId)->fetch();
 		return $shoppingListRow !== null;
 	}
 
@@ -656,13 +656,13 @@ class StockService extends BaseService
 
 	public function UndoBooking($bookingId)
 	{
-		$logRow = $this->Database->stock_log()->where('id = :1 AND undone = 0', $bookingId)->fetch();
+		$logRow = $this->Database->stock_log()->where('id = ? AND undone = 0', $bookingId)->fetch();
 		if ($logRow == null)
 		{
 			throw new \Exception('Booking does not exist or was already undone');
 		}
 
-		$hasSubsequentBookings = $this->Database->stock_log()->where('stock_id = :1 AND id != :2 AND id > :2', $logRow->stock_id, $logRow->id)->count() > 0;
+		$hasSubsequentBookings = $this->Database->stock_log()->where('stock_id = ? AND id != ? AND id > ?', $logRow->stock_id, $logRow->id)->count() > 0;
 		if ($hasSubsequentBookings)
 		{
 			throw new \Exception('Booking has subsequent dependent bookings, undo not possible');
@@ -703,7 +703,7 @@ class StockService extends BaseService
 		elseif ($logRow->transaction_type === self::TRANSACTION_TYPE_PRODUCT_OPENED)
 		{
 			// Remove opened flag from corresponding log entry
-			$stockRows = $this->Database->stock()->where('stock_id = :1 AND amount = :2 AND purchased_date = :3', $logRow->stock_id, $logRow->amount, $logRow->purchased_date)->limit(1);
+			$stockRows = $this->Database->stock()->where('stock_id = ? AND amount = ? AND purchased_date = ?', $logRow->stock_id, $logRow->amount, $logRow->purchased_date)->limit(1);
 			$stockRows->update(array(
 				'open' => 0,
 				'opened_date' => null

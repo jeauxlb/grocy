@@ -17,7 +17,7 @@ class TasksService extends BaseService
 			throw new \Exception('Task does not exist');
 		}
 
-		$taskRow = $this->Database->tasks()->where('id = :1', $taskId)->fetch();
+		$taskRow = $this->Database->tasks()->where('id = ?', $taskId)->fetch();
 		$taskRow->update(array(
 			'done' => 1,
 			'done_timestamp' => $doneTime
@@ -33,7 +33,7 @@ class TasksService extends BaseService
 			throw new \Exception('Task does not exist');
 		}
 
-		$taskRow = $this->Database->tasks()->where('id = :1', $taskId)->fetch();
+		$taskRow = $this->Database->tasks()->where('id = ?', $taskId)->fetch();
 		$taskRow->update(array(
 			'done' => 0,
 			'done_timestamp' => null
@@ -44,7 +44,7 @@ class TasksService extends BaseService
 
 	private function TaskExists($taskId)
 	{
-		$taskRow = $this->Database->tasks()->where('id = :1', $taskId)->fetch();
+		$taskRow = $this->Database->tasks()->where('id = ?', $taskId)->fetch();
 		return $taskRow !== null;
 	}
 }

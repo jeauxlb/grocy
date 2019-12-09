@@ -79,7 +79,7 @@ class RecipesService extends BaseService
 
 	private function RecipeExists($recipeId)
 	{
-		$recipeRow = $this->Database->recipes()->where('id = :1', $recipeId)->fetch();
+		$recipeRow = $this->Database->recipes()->where('id = ?', $recipeId)->fetch();
 		return $recipeRow !== null;
 	}
 }

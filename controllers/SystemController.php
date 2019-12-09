@@ -28,6 +28,17 @@ class SystemController extends BaseController
 			$demoDataGeneratorService->PopulateDemoData();
 		}
 
+		// // echo debug_backtrace()[1]['function'] . ; die();
+		// $wantedKeys = array('function', 'line', 'file', 'class');
+		// $i = 0;
+		// $debug = debug_backtrace();
+		// while(array_key_exists($i, $debug)) {
+		// 	$a = array_intersect_key(debug_backtrace()[$i], array_flip($wantedKeys));
+		// 	print_r($a);
+		// 	$i++;
+		// }
+		// die();
+
 		return $response->withRedirect($this->AppContainer->UrlManager->ConstructUrl($this->GetEntryPageRelative()));
 	}
 

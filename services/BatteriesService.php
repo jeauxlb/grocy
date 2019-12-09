@@ -18,8 +18,8 @@ class BatteriesService extends BaseService
 		}
 
 		$battery = $this->Database->batteries($batteryId);
-		$batteryChargeCyclesCount = $this->Database->battery_charge_cycles()->where('battery_id = :1 AND undone = 0', $batteryId)->count();
-		$batteryLastChargedTime = $this->Database->battery_charge_cycles()->where('battery_id = :1 AND undone = 0', $batteryId)->max('tracked_time');
+		$batteryChargeCyclesCount = $this->Database->battery_charge_cycles()->where('battery_id = ? AND undone = 0', $batteryId)->count();
+		$batteryLastChargedTime = $this->Database->battery_charge_cycles()->where('battery_id = ? AND undone = 0', $batteryId)->max('tracked_time');
 		$nextChargeTime = $this->Database->batteries_current()->where('battery_id', $batteryId)->min('next_estimated_charge_time');
 
 		return array(
@@ -48,13 +48,13 @@ class BatteriesService extends BaseService
 
 	private function BatteryExists($batteryId)
 	{
-		$batteryRow = $this->Database->batteries()->where('id = :1', $batteryId)->fetch();
+		$batteryRow = $this->Database->batteries()->where('id = ?', $batteryId)->fetch();
 		return $batteryRow !== null;
 	}
 
 	public function UndoChargeCycle($chargeCycleId)
 	{
-		$logRow = $this->Database->battery_charge_cycles()->where('id = :1 AND undone = 0', $chargeCycleId)->fetch();
+		$logRow = $this->Database->battery_charge_cycles()->where('id = ? AND undone = 0', $chargeCycleId)->fetch();
 		if ($logRow == null)
 		{
 			throw new \Exception('Charge cycle does not exist or was already undone');

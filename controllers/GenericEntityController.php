@@ -31,11 +31,11 @@ class GenericEntityController extends BaseController
 
 	public function UserobjectsList(\Slim\Http\Request $request, \Slim\Http\Response $response, array $args)
 	{
-		$userentity = $this->Database->userentities()->where('name = :1', $args['userentityName'])->fetch();
+		$userentity = $this->Database->userentities()->where('name = ?', $args['userentityName'])->fetch();
 
 		return $this->AppContainer->view->render($response, 'userobjects', [
 			'userentity' => $userentity,
-			'userobjects' => $this->Database->userobjects()->where('userentity_id = :1', $userentity->id),
+			'userobjects' => $this->Database->userobjects()->where('userentity_id = ?', $userentity->id),
 			'userfields' => $this->UserfieldsService->GetFields('userentity-' . $args['userentityName']),
 			'userfieldValues' => $this->UserfieldsService->GetAllValues('userentity-' . $args['userentityName'])
 		]);
@@ -81,7 +81,7 @@ class GenericEntityController extends BaseController
 
 	public function UserobjectEditForm(\Slim\Http\Request $request, \Slim\Http\Response $response, array $args)
 	{
-		$userentity = $this->Database->userentities()->where('name = :1', $args['userentityName'])->fetch();
+		$userentity = $this->Database->userentities()->where('name = ?', $args['userentityName'])->fetch();
 
 		if ($args['userobjectId'] == 'new')
 		{

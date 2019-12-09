@@ -18,7 +18,7 @@ class ApiKeyService extends BaseService
 		}
 		else
 		{
-			$apiKeyRow = $this->Database->api_keys()->where('api_key = :1 AND expires > :2 AND key_type = :3', $apiKey, date('Y-m-d H:i:s', time()), $keyType)->fetch();
+			$apiKeyRow = $this->Database->api_keys()->where('api_key = ? AND expires > ? AND key_type = ?', $apiKey, date('Y-m-d H:i:s', time()), $keyType)->fetch();
 			if ($apiKeyRow !== null)
 			{
 				// This should not change the database file modification time as this is used
@@ -87,7 +87,7 @@ class ApiKeyService extends BaseService
 		}
 		else
 		{
-			$apiKeyRow = $this->Database->api_keys()->where('key_type = :1 AND expires > :2', $keyType, date('Y-m-d H:i:s', time()))->fetch();
+			$apiKeyRow = $this->Database->api_keys()->where('key_type = ? AND expires > ?', $keyType, date('Y-m-d H:i:s', time()))->fetch();
 			if ($apiKeyRow !== null)
 			{
 				return $apiKeyRow->api_key;

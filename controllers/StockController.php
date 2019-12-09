@@ -71,7 +71,7 @@ class StockController extends BaseController
 		}
 
 		return $this->AppContainer->view->render($response, 'shoppinglist', [
-			'listItems' => $this->Database->shopping_list()->where('shopping_list_id = :1', $listId),
+			'listItems' => $this->Database->shopping_list()->where('shopping_list_id = ?', $listId),
 			'products' => $this->Database->products()->orderBy('name'),
 			'quantityunits' => $this->Database->quantity_units()->orderBy('name'),
 			'missingProducts' => $this->StockService->GetMissingProducts(),
@@ -156,8 +156,8 @@ class StockController extends BaseController
 				'quantityunits' =>  $this->Database->quantity_units()->orderBy('name'),
 				'productgroups' => $this->Database->product_groups()->orderBy('name'),
 				'userfields' => $this->UserfieldsService->GetFields('products'),
-				'products' => $this->Database->products()->where('id != :1 AND parent_product_id IS NULL', $product->id)->orderBy('name'),
-				'isSubProductOfOthers' => $this->Database->products()->where('parent_product_id = :1', $product->id)->count() !== 0,
+				'products' => $this->Database->products()->where('id != ? AND parent_product_id IS NULL', $product->id)->orderBy('name'),
+				'isSubProductOfOthers' => $this->Database->products()->where('parent_product_id = ?', $product->id)->count() !== 0,
 				'mode' => 'edit',
 				'quConversions' => $this->Database->quantity_unit_conversions()
 			]);
@@ -223,7 +223,7 @@ class StockController extends BaseController
 				'userfields' => $this->UserfieldsService->GetFields('quantity_units'),
 				'pluralCount' => $this->LocalizationService->GetPluralCount(),
 				'pluralRule' => $this->LocalizationService->GetPluralDefinition(),
-				'defaultQuConversions' => $this->Database->quantity_unit_conversions()->where('from_qu_id = :1 AND product_id IS NULL', $quantityUnit->id),
+				'defaultQuConversions' => $this->Database->quantity_unit_conversions()->where('from_qu_id = ? AND product_id IS NULL', $quantityUnit->id),
 				'quantityUnits' => $this->Database->quantity_units()
 			]);
 		}
