@@ -217,7 +217,7 @@
 			@php if($mode == 'edit') { $value = $product->calories; } else { $value = 0; } @endphp
 			@include('components.numberpicker', array(
 				'id' => 'calories',
-				'label' => 'Energy (kcal)',
+				'label' => 'Energy (kJ)',
 				'min' => 0,
 				'step' => 1,
 				'value' => $value,
