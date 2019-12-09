@@ -3,7 +3,7 @@ ADD cumulate_min_stock_amount_of_sub_products TINYINT DEFAULT 0;
 
 CREATE VIEW products_view
 AS
-SELECT *, CASE WHEN (SELECT 1 FROM products WHERE parent_product_id = p.id) NOTNULL THEN 1 ELSE 0 END AS has_sub_products
+SELECT *, CASE WHEN (SELECT 1 FROM products WHERE parent_product_id = p.id) <> NULL THEN 1 ELSE 0 END AS has_sub_products
 FROM products p;
 
 DROP VIEW stock_missing_products;
@@ -77,6 +77,7 @@ SELECT
 	p.id,
 	MAX(p.name) AS name,
 	p.min_stock_amount - (IFNULL(SUM(s.amount), 0) - IFNULL(SUM(s.amount_opened), 0)) AS amount_missing,
+    p.min_stock_amount as min_stock_amount,
 	CASE WHEN IFNULL(SUM(s.amount), 0) > 0 THEN 1 ELSE 0 END AS is_partly_in_stock
 FROM products_view p
 LEFT JOIN stock_current s
@@ -86,7 +87,7 @@ WHERE p.min_stock_amount != 0
 	AND p.has_sub_products = 0
 	AND p.parent_product_id IS NULL
 GROUP BY p.id
-HAVING IFNULL(SUM(s.amount), 0) < p.min_stock_amount
+HAVING IFNULL(SUM(s.amount), 0) < min_stock_amount
 
 UNION
 
@@ -95,6 +96,7 @@ SELECT
 	p.id,
 	MAX(p.name) AS name,
 	SUM(sub_p.min_stock_amount) - (IFNULL(SUM(s.amount_aggregated), 0) - IFNULL(SUM(s.amount_opened), 0)) AS amount_missing,
+    sub_p.min_stock_amount,
 	CASE WHEN IFNULL(SUM(s.amount), 0) > 0 THEN 1 ELSE 0 END AS is_partly_in_stock
 FROM products_view p
 JOIN products_resolved pr
@@ -105,7 +107,7 @@ LEFT JOIN stock_current s
 	ON pr.sub_product_id = s.product_id
 WHERE sub_p.min_stock_amount != 0
 	AND p.cumulate_min_stock_amount_of_sub_products = 1
-GROUP BY p.id
+GROUP BY p.id, sub_p.min_stock_amount
 HAVING IFNULL(SUM(s.amount_aggregated), 0) < SUM(sub_p.min_stock_amount)
 
 UNION
@@ -115,6 +117,7 @@ SELECT
 	sub_p.id,
 	MAX(sub_p.name) AS name,
 	SUM(sub_p.min_stock_amount) - (IFNULL(SUM(s.amount), 0) - IFNULL(SUM(s.amount_opened), 0)) AS amount_missing,
+	p.min_stock_amount as min_stock_amount,
 	CASE WHEN IFNULL(SUM(s.amount), 0) > 0 THEN 1 ELSE 0 END AS is_partly_in_stock
 FROM products p
 JOIN products_resolved pr
@@ -125,5 +128,9 @@ LEFT JOIN stock_current s
 	ON pr.sub_product_id = s.product_id
 WHERE sub_p.min_stock_amount != 0
 	AND p.cumulate_min_stock_amount_of_sub_products = 0
-GROUP BY sub_p.id
-HAVING IFNULL(SUM(s.amount), 0) < sub_p.min_stock_amount;
+GROUP BY sub_p.id, min_stock_amount
+HAVING IFNULL(SUM(s.amount), 0) < min_stock_amount;
+
+
+
+

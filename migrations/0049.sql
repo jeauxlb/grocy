@@ -6,16 +6,16 @@ PRAGMA legacy_alter_table = ON;
 ALTER TABLE stock RENAME TO stock_old;
 
 CREATE TABLE stock (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	product_id INTEGER NOT NULL,
 	amount DECIMAL(15, 2) NOT NULL,
 	best_before_date DATE,
-	purchased_date DATE DEFAULT (datetime('now', 'localtime')),
+	purchased_date DATE DEFAULT CURRENT_TIMESTAMP,
 	stock_id TEXT NOT NULL,
 	price DECIMAL(15, 2),
 	open TINYINT NOT NULL DEFAULT 0 CHECK(open IN (0, 1)),
 	opened_date DATETIME,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO stock
@@ -28,7 +28,7 @@ DROP TABLE stock_old;
 ALTER TABLE stock_log RENAME TO stock_log_old;
 
 CREATE TABLE stock_log (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	product_id INTEGER NOT NULL,
 	amount DECIMAL(15, 2) NOT NULL,
 	best_before_date DATE,
@@ -41,7 +41,7 @@ CREATE TABLE stock_log (
 	undone TINYINT NOT NULL DEFAULT 0 CHECK(undone IN (0, 1)),
 	undone_timestamp DATETIME,
 	opened_date DATETIME,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO stock_log
@@ -54,11 +54,11 @@ DROP TABLE stock_log_old;
 ALTER TABLE shopping_list RENAME TO shopping_list_old;
 
 CREATE TABLE shopping_list (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	product_id INTEGER,
 	note TEXT,
 	amount DECIMAL(15, 2) NOT NULL DEFAULT 0,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO shopping_list

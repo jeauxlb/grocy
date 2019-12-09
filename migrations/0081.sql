@@ -33,7 +33,7 @@ JOIN stock s
 	ON pr.sub_product_id = s.product_id
 JOIN products p
 	ON pr.sub_product_id = p.id
-GROUP BY pr.parent_product_id
+GROUP BY pr.parent_product_id, is_aggregated_amount
 HAVING SUM(s.amount) > 0
 
 UNION

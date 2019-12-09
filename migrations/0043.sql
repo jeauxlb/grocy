@@ -1,8 +1,8 @@
 CREATE TABLE recipes_nestings (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	recipe_id INTEGER NOT NULL,
 	includes_recipe_id INTEGER NOT NULL,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 
 	UNIQUE(recipe_id, includes_recipe_id)
 );

@@ -1,11 +1,11 @@
 ALTER TABLE habits RENAME TO chores;
 
 CREATE TABLE chores_log (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	chore_id INTEGER NOT NULL,
 	tracked_time DATETIME,
 	done_by_user_id INTEGER,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO chores_log

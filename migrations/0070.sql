@@ -1,8 +1,8 @@
 CREATE TABLE meal_plan (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	day DATE NOT NULL,
 	recipe_id INTEGER NOT NULL,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 
 	UNIQUE(day, recipe_id)
 );

@@ -1,7 +1,7 @@
 ALTER TABLE recipes_pos RENAME TO recipes_pos_old;
 
 CREATE TABLE recipes_pos (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	recipe_id INTEGER NOT NULL,
 	product_id INTEGER NOT NULL,
 	amount REAL NOT NULL DEFAULT 0,
@@ -10,7 +10,7 @@ CREATE TABLE recipes_pos (
 	only_check_single_unit_in_stock TINYINT NOT NULL DEFAULT 0,
 	ingredient_group TEXT,
 	not_check_stock_fulfillment TINYINT NOT NULL DEFAULT 0,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TRIGGER recipes_pos_qu_id_default;

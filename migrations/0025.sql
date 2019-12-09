@@ -1,17 +1,17 @@
 CREATE TABLE recipes (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name TEXT NOT NULL,
 	description TEXT,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE recipes_pos (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	recipe_id INTEGER NOT NULL,
 	product_id INTEGER NOT NULL,
 	amount INTEGER NOT NULL DEFAULT 0,
 	note TEXT,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE VIEW recipes_fulfillment

@@ -1,10 +1,10 @@
 CREATE TABLE quantity_unit_conversions (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	from_qu_id INT NOT NULL,
 	to_qu_id INT NOT NULL,
 	factor REAL NOT NULL,
 	product_id INT,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TRIGGER quantity_unit_conversions_custom_unique_constraint_INS BEFORE INSERT ON quantity_unit_conversions

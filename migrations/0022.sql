@@ -1,7 +1,7 @@
 CREATE TABLE api_keys (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	api_key TEXT NOT NULL UNIQUE,
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	api_key varchar(30) NOT NULL UNIQUE,
 	expires DATETIME,
 	last_used DATETIME,
-	row_created_timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
+	row_created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 )
