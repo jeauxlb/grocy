@@ -52,6 +52,7 @@ class DatabaseMigrationService extends BaseService
 	private function ExecutePhpMigrationWhenNeeded(int $migrationId, string $phpFile)
 	{
 		// $rowCount = $this->DatabaseService->ExecuteDbQuery('SELECT COUNT(*) FROM migrations WHERE migration = ' . $migrationId)->fetchColumn();
+		$rowCount = 1;
 		if (intval($rowCount) === 0)
 		{
 			include $phpFile;
